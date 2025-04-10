@@ -1,0 +1,99 @@
+[project]
+name = "a11ymcp"
+version = "0.1.0"
+description = "Accessibility Helper Assistant MCP."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "mcp[cli]>=1.2.0",
+    "ruff>=0.9.10",
+    "toml>=0.10.2",
+    "tomli>=2.1.1",
+    "anyio>=3.7.0",
+    "pyyaml>=6.0.0",
+    "pytest-xdist>=3.6.1",
+    "editorconfig>=0.17.0",
+    "click>=8.1.8",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "expecttest>=0.1.4",
+    "ruff>=0.1.5",
+    "pyright>=1.1.350",
+    "tomli_w>=1.0.0",
+]
+
+[project.scripts]
+a11ymcp = "a11ymcp:cli"
+a11ymcp-multi = "a11ymcp.multi_entry:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+# Enable the formatter
+target-version = "py312"
+line-length = 88
+indent-width = 4
+
+# Enabled linters
+[tool.ruff.lint]
+select = ["ASYNC"]
+
+# Exclude test files from ASYNC lints
+[tool.ruff.lint.per-file-ignores]
+"test/**/*.py" = ["ASYNC"]
+
+[tool.ruff.format]
+# Formatter settings
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+# Pytest configuration
+testpaths = ["tests", "e2e"]
+addopts = "-n auto --tb=native"
+
+[tool.pyright]
+# Pyright configuration with strict settings
+include = ["a11ymcp"]
+exclude = ["**/node_modules", "**/__pycache__", "dist"]
+venvPath = "."
+venv = ".venv"
+reportMissingImports = true
+reportMissingTypeStubs = true
+pythonVersion = "3.12"
+pythonPlatform = "All"
+typeCheckingMode = "strict"
+reportUnknownMemberType = true
+reportUnknownParameterType = true
+reportUnknownVariableType = true
+reportUnknownArgumentType = true
+reportPrivateImportUsage = true
+reportUntypedFunctionDecorator = true
+reportFunctionMemberAccess = true
+reportIncompatibleMethodOverride = true
+stubPath = "./stubs"
+
+# Type stub package mappings
+stubPackages = [
+    { source = "tomli", stub = "tomli_stubs" },
+    { source = "mcp", stub = "mcp_stubs" }
+]
+
+# For testing code specific ignores
+[[tool.pyright.ignoreExtraErrors]]
+path = "a11ymcp/hot_reload_entry.py"
+errorCodes = ["reportUnknownMemberType"]
+
+[[tool.pyright.ignoreExtraErrors]]
+path = "a11ymcp/testing.py"
+errorCodes = ["reportUnknownMemberType", "reportUnknownArgumentType", "reportUnknownVariableType"]
